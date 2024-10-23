@@ -1,5 +1,5 @@
 
-
+/*
 O que é Promise.all?
 
 Imagine que Promise.all é como uma caixa grande que pode conter várias pequenas caixas. Cada pequena caixa (promessa) representa uma tarefa que nosso ajudante robô está fazendo.
