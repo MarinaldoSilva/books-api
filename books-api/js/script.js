@@ -1,12 +1,31 @@
-//fetch é um metodo nativo do js que permite fazer requisições assincronas
-//then() usamos para acesso a retorno do tipo response e dentro dos parenteses vamos adicionar os parametros
-let consultaCEP = fetch('https://viacep.com.br/ws/00000000/json/')
-.then(response => response.json())//transforma minha response em dados do tipo json
-.then(dadosFormatados=>{//meu dados formatados para json podem ser utilizados de forma legivel no meu script
-    if (dadosFormatados.erro) {//se o retorno for true, vai entrar diretamente aqui no erro e vai jogar na pilha de execução
-        throw Error('Cep não encontrado na base de dados')
+let cep = document.getElementById('cep');
+let logradouro = document.getElementById('endereco'); 
+let bairro = document.getElementById('bairro');
+let cidade = document.getElementById('cidade'); 
+let estado = document.getElementById('estado');
+let infoErro = document.getElementById('erro');
+infoErro.innerHTML = ""
+cep.addEventListener('focusout', ()=>buscaEndereco(cep.value))
+
+async function buscaEndereco(cep) {
+    try{
+        let consultaCEP = await fetch(`https://viacep.com.br/ws/${cep}/json`);//recebe o resultado da promisse em bytes     
+        let consultaCEPConvertidoJson = await consultaCEP.json();
+
+        if (consultaCEPConvertidoJson.erro) {
+            throw Error('verifique o cep e tente novamente')
+        }
+        logradouro.value = consultaCEPConvertidoJson.logradouro
+        bairro.value = consultaCEPConvertidoJson.bairro
+        cidade.value = consultaCEPConvertidoJson.localidade
+        estado.value = consultaCEPConvertidoJson.uf
+        console.log(consultaCEPConvertidoJson)
+
+       // console.log(consultaCEP)
+    }catch(erro){
+        console.log('erro')
+        infoErro.innerHTML = 'cep invalido'
     }
-    console.log(dadosFormatados)
-}).catch(error => console.log(`Erro na requsição=> ${error}`))//captura os erros e imprime no console
-.finally(msg => console.log(`processamento concluido`))
-console.log(consultaCEP)
+}
+
+
